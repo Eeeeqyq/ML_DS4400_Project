@@ -1,52 +1,52 @@
 {
   "With High-Earning Score": {
     "Ridge": {
-      "Train_MAE": 5.399,
+      "Train_MAE": 5.4,
       "MAE": 5.15,
       "RMSE": 6.519,
       "R2": 0.45
     },
     "Decision Tree": {
-      "Train_MAE": 3.367,
-      "MAE": 4.537,
-      "RMSE": 6.535,
-      "R2": 0.448
+      "Train_MAE": 3.835,
+      "MAE": 4.499,
+      "RMSE": 6.26,
+      "R2": 0.493
     },
     "Random Forest": {
-      "Train_MAE": 1.676,
-      "MAE": 3.946,
-      "RMSE": 5.379,
+      "Train_MAE": 1.677,
+      "MAE": 3.939,
+      "RMSE": 5.375,
       "R2": 0.626
     },
     "Neural Network": {
-      "MAE": 4.162,
-      "RMSE": 5.639,
-      "R2": 0.589
+      "MAE": 4.167,
+      "RMSE": 5.592,
+      "R2": 0.595
     }
   },
   "Without High-Earning Score": {
     "Ridge": {
-      "Train_MAE": 5.4,
+      "Train_MAE": 5.402,
       "MAE": 5.156,
       "RMSE": 6.527,
       "R2": 0.449
     },
     "Decision Tree": {
-      "Train_MAE": 3.394,
-      "MAE": 4.538,
-      "RMSE": 6.568,
-      "R2": 0.442
+      "Train_MAE": 3.898,
+      "MAE": 4.568,
+      "RMSE": 6.428,
+      "R2": 0.466
     },
     "Random Forest": {
-      "Train_MAE": 1.685,
-      "MAE": 4.006,
-      "RMSE": 5.482,
-      "R2": 0.611
+      "Train_MAE": 1.688,
+      "MAE": 3.991,
+      "RMSE": 5.468,
+      "R2": 0.613
     },
     "Neural Network": {
-      "MAE": 4.33,
-      "RMSE": 5.762,
-      "R2": 0.571
+      "MAE": 4.248,
+      "RMSE": 5.709,
+      "R2": 0.578
     }
   }
 }

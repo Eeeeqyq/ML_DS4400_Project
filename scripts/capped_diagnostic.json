@@ -1,26 +1,26 @@
 {
   "Ridge": {
-    "capped_MAE": 5.304,
+    "capped_MAE": 5.305,
     "noncapped_MAE": 5.041,
     "noncapped_R2": -0.036,
     "pct_predicted_capped": 7.6
   },
   "Decision Tree": {
-    "capped_MAE": 3.982,
-    "noncapped_MAE": 4.926,
-    "noncapped_R2": -0.071,
-    "pct_predicted_capped": 20.2
+    "capped_MAE": 4.037,
+    "noncapped_MAE": 4.823,
+    "noncapped_R2": 0.02,
+    "pct_predicted_capped": 16.9
   },
   "Random Forest": {
-    "capped_MAE": 3.71,
-    "noncapped_MAE": 4.111,
-    "noncapped_R2": 0.278,
-    "pct_predicted_capped": 11.7
+    "capped_MAE": 3.707,
+    "noncapped_MAE": 4.102,
+    "noncapped_R2": 0.281,
+    "pct_predicted_capped": 11.2
   },
   "Neural Network": {
-    "capped_MAE": 4.407,
+    "capped_MAE": 4.047,
     "noncapped_MAE": 4.182,
-    "noncapped_R2": 0.243,
-    "pct_predicted_capped": 6.0
+    "noncapped_R2": 0.23,
+    "pct_predicted_capped": 8.8
   }
 }
