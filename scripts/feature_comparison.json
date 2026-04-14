@@ -1,0 +1,52 @@
+{
+  "With high_earning_share": {
+    "Ridge": {
+      "Train_MAE": 5.399,
+      "MAE": 5.15,
+      "RMSE": 6.519,
+      "R2": 0.45
+    },
+    "Decision Tree": {
+      "Train_MAE": 3.367,
+      "MAE": 4.537,
+      "RMSE": 6.535,
+      "R2": 0.448
+    },
+    "Random Forest": {
+      "Train_MAE": 1.676,
+      "MAE": 3.946,
+      "RMSE": 5.379,
+      "R2": 0.626
+    },
+    "Neural Network": {
+      "MAE": 4.196,
+      "RMSE": 5.68,
+      "R2": 0.583
+    }
+  },
+  "Without high_earning_share": {
+    "Ridge": {
+      "Train_MAE": 5.4,
+      "MAE": 5.156,
+      "RMSE": 6.527,
+      "R2": 0.449
+    },
+    "Decision Tree": {
+      "Train_MAE": 3.394,
+      "MAE": 4.538,
+      "RMSE": 6.568,
+      "R2": 0.442
+    },
+    "Random Forest": {
+      "Train_MAE": 1.685,
+      "MAE": 4.006,
+      "RMSE": 5.482,
+      "R2": 0.611
+    },
+    "Neural Network": {
+      "MAE": 4.249,
+      "RMSE": 5.661,
+      "R2": 0.586
+    }
+  }
+}

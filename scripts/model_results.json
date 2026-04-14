@@ -1,0 +1,30 @@
+{
+  "Ridge": {
+    "Train_MAE": 5.399,
+    "MAE": 5.15,
+    "RMSE": 6.519,
+    "R2": 0.45,
+    "CV_MAE": 5.473
+  },
+  "Decision Tree": {
+    "Train_MAE": 3.367,
+    "MAE": 4.537,
+    "RMSE": 6.535,
+    "R2": 0.448,
+    "CV_MAE": 4.823
+  },
+  "Random Forest": {
+    "Train_MAE": 1.676,
+    "MAE": 3.946,
+    "RMSE": 5.379,
+    "R2": 0.626,
+    "CV_MAE": 4.405
+  },
+  "Neural Network": {
+    "Train_MAE": 3.728,
+    "MAE": 4.364,
+    "RMSE": 5.7,
+    "R2": 0.58,
+    "CV_MAE": 4.644
+  }
+}
