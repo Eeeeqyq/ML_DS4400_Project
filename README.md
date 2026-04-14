@@ -12,13 +12,15 @@ Live project demo: [https://demo-theta-orcin-89.vercel.app/](https://demo-theta-
 - `milestone.md`: milestone report (markdown version)
 - `proposal.md`: original project proposal
 - `final.md`: placeholder for final report (to be written)
-- `generate_figures.py`: script that reproduces all EDA + model figures and `model_results.json`
-- `figures/`: the 7 PNG figures referenced in the report
-- `model_results.json`: Ridge + Decision Tree metrics from the script
+- `scripts/generate_figures.py`: reproduces all EDA + model figures and JSON metric outputs
+- `scripts/figures/`: PNG figures produced by that script (21 files, numbered `01_`–`21_`)
+- `scripts/model_results.json`: test metrics for Ridge, Decision Tree, Random Forest, and Neural Network
+- `scripts/feature_comparison.json`, `scripts/capped_diagnostic.json`: additional diagnostics from the same script
+- `scripts/export_model.py`: trains the Random Forest and writes `demo/public/model.json` for the browser demo
 
 ## Getting the dataset (not committed to GitHub)
 
-The College Scorecard dataset is **not** committed to this repository because it’s very large.
+The College Scorecard dataset is **not** committed to this repository because it is very large.
 
 1. Download the data from the U.S. Department of Education College Scorecard site:
    - `https://collegescorecard.ed.gov/data`
@@ -36,20 +38,30 @@ Note: the official extracted folder name is date-stamped and changes over time. 
 
 ## Reproducing figures + results (uses conda env `ds`)
 
-Run:
+From the **repository root**:
 
 ```bash
-conda run -n ds python generate_figures.py
+conda run -n ds python scripts/generate_figures.py
 ```
 
-Outputs:
+This writes PNGs under `scripts/figures/` and JSON under `scripts/`.
 
-- `figures/01_target_distribution.png`
-- `figures/02_feature_availability.png`
-- `figures/03_correlation_heatmap.png`
-- `figures/04_payoff_by_control.png`
-- `figures/05_tuition_vs_payoff.png`
-- `figures/06_model_comparison.png`
-- `figures/07_predicted_vs_actual.png`
-- `model_results.json`
+**Figure outputs** (in order):
 
+- `01_target_distribution.png` through `07_high_earning_score_vs_payoff.png` — EDA
+- `08_ridge_alpha_sweep.png` through `11_nn_sweeps.png` — hyperparameter sweeps
+- `12_model_comparison.png` through `21_residuals_by_type.png` — models, diagnostics, importances
+
+**JSON outputs:**
+
+- `scripts/model_results.json`
+- `scripts/feature_comparison.json`
+- `scripts/capped_diagnostic.json`
+
+**Browser demo model** (after pipeline changes, keep in sync):
+
+```bash
+conda run -n ds python scripts/export_model.py
+```
+
+Writes `demo/public/model.json`.

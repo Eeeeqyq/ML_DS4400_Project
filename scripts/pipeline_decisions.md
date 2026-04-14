@@ -1,7 +1,6 @@
 # Pipeline Decisions
 
-Every decision is justified by `data_profile.json`. Run `profile_data.py` to regenerate.
-Run `test_decisions.py` to measure the impact of each decision before committing.
+Rationale for the feature pipeline. **Implementation:** `scripts/generate_figures.py` (and `scripts/export_model.py` for the demo export).
 
 ---
 
@@ -27,7 +26,7 @@ Median-imputing a 68% missing column is injecting noise. A merged
 `NPT4 = NPT4_PUB.fillna(NPT4_PRIV)` has only 13.3% missing.
 
 **Decision**: Create NPT4, drop NPT4_PUB and NPT4_PRIV from feature list.
-**Status**: PENDING — test impact first.
+**Status**: IMPLEMENTED.
 
 ---
 
@@ -42,7 +41,7 @@ and split importance in trees. TUITIONFEE_OUT is both more predictive
 and less collinear with NPT4.
 
 **Decision**: Drop TUITIONFEE_IN, keep TUITIONFEE_OUT.
-**Status**: PENDING — test impact first.
+**Status**: IMPLEMENTED.
 
 ---
 
@@ -55,7 +54,7 @@ after log will produce a much more normal distribution.
 Note: UGDS has 402 zeros (8.9%). Use log1p to handle them.
 
 **Decision**: Replace UGDS with log1p(UGDS) before scaling.
-**Status**: PENDING — test impact first.
+**Status**: IMPLEMENTED.
 
 ---
 
@@ -70,7 +69,7 @@ reported admission rate is itself a strong signal (for-profit and open-admission
 schools don't report, and those schools have longer payoff).
 
 **Decision**: Keep ADM_RATE (median-imputed) AND add ADM_RATE_missing binary indicator.
-**Status**: PENDING — test impact first.
+**Status**: IMPLEMENTED.
 
 ---
 
@@ -91,7 +90,7 @@ distinguish "no high-earning programs" from "data not reported."
 
 **Decision**: Add PCIP_reported binary feature (1 if any PCIP column was non-NaN
 in the raw data, 0 if all were NaN before our fillna).
-**Status**: PENDING — test impact first.
+**Status**: IMPLEMENTED.
 
 ---
 
@@ -140,16 +139,16 @@ presentation is more valuable than adding model complexity.
 
 ---
 
-## Summary of changes to implement
+## Summary
 
-| # | Change | Expected impact |
-|---|--------|----------------|
-| D1 | Drop NaN target rows before engineering | CRITICAL — already done |
-| D2 | Merge NPT4 | Reduce noise from 68% imputation |
-| D3 | Drop TUITIONFEE_IN | Reduce collinearity, cleaner Ridge coefficients |
-| D4 | Log-transform UGDS | Help Ridge/NN with extreme skew |
-| D5 | Add ADM_RATE_missing indicator | Capture "doesn't report" signal |
-| D6 | Add PCIP_reported indicator | Distinguish real zeros from missing |
-| D7 | Keep UGDS_HISP | No action |
-| D8 | Keep PCTFLOAN | No action |
-| D9 | Acknowledge capped target | Presentation topic, not code change |
+| # | Change | Status |
+|---|--------|--------|
+| D1 | Drop NaN target rows before engineering | IMPLEMENTED |
+| D2 | Merge NPT4 | IMPLEMENTED |
+| D3 | Drop TUITIONFEE_IN | IMPLEMENTED |
+| D4 | Log-transform UGDS | IMPLEMENTED |
+| D5 | Add ADM_RATE_missing indicator | IMPLEMENTED |
+| D6 | Add PCIP_reported indicator | IMPLEMENTED |
+| D7 | Keep UGDS_HISP | NO ACTION |
+| D8 | Keep PCTFLOAN | NO ACTION |
+| D9 | Acknowledge capped target | NO ACTION (presentation) |

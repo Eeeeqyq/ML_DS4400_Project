@@ -5,7 +5,7 @@ Generate all EDA, model, and analysis figures for the DS4400 Final Project.
 Usage:
     conda run -n ds python scripts/generate_figures.py
 
-Outputs PNGs to figures/ and model_results.json to the repo root.
+Outputs PNGs to scripts/figures/ and JSON metrics to scripts/.
 """
 
 import json
