@@ -8,6 +8,8 @@ Usage:
 """
 
 import json
+import os
+import random
 from pathlib import Path
 
 import numpy as np
@@ -18,6 +20,11 @@ from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
+
+SEED = 42
+random.seed(SEED)
+os.environ["PYTHONHASHSEED"] = str(SEED)
+np.random.seed(SEED)
 
 BASE = Path(__file__).resolve().parent.parent
 RAW_DATA_DIR = BASE / "raw-data"
@@ -106,7 +113,7 @@ for c in CATEGORICAL_FEATURES:
 NUMERIC_FEATURES = BASE_NUMERIC_FEATURES + ["high_earning_share"]
 X = df[NUMERIC_FEATURES + CATEGORICAL_FEATURES]
 y = df["payoff"]
-X_train, _, y_train, _ = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, _, y_train, _ = train_test_split(X, y, test_size=0.2, random_state=SEED)
 
 # ── Train RF with known-good hyperparams ────────────────────────────
 
@@ -124,7 +131,7 @@ preprocessor = ColumnTransformer([
 ])
 
 rf = RandomForestRegressor(n_estimators=100, max_depth=None, min_samples_leaf=1,
-                           random_state=42, n_jobs=-1)
+                           random_state=SEED, n_jobs=-1)
 pipe = Pipeline([("prep", preprocessor), ("model", rf)])
 pipe.fit(X_train, y_train)
 print(f"Trained RF on {len(X_train)} rows")

@@ -9,6 +9,8 @@ Outputs PNGs to figures/ and model_results.json to the repo root.
 """
 
 import json
+import os
+import random
 import warnings
 from pathlib import Path
 
@@ -33,12 +35,37 @@ from sklearn.metrics import (
     roc_auc_score,
     roc_curve,
 )
-from sklearn.model_selection import cross_val_score, train_test_split
+from sklearn.model_selection import KFold, cross_val_score, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeRegressor
 
 warnings.filterwarnings("ignore", category=FutureWarning)
+
+SEED = 42
+
+
+def set_determinism(seed: int = SEED) -> None:
+    """
+    Best-effort reproducibility for this script.
+
+    Note: full determinism also depends on your BLAS/threading stack and whether you run on GPU.
+    """
+    random.seed(seed)
+    os.environ["PYTHONHASHSEED"] = str(seed)  # takes full effect only if set before interpreter start
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    try:
+        torch.use_deterministic_algorithms(True)
+    except Exception:
+        pass
+
+
+set_determinism(SEED)
 
 BASE = Path(__file__).resolve().parent.parent
 RAW_DATA_DIR = BASE / "raw-data"
@@ -395,9 +422,9 @@ ax.set_ylabel(TARGET_LABEL)
 ax.set_title("High-Earning Score vs. estimated payoff time")
 ax.legend()
 fig.tight_layout()
-fig.savefig(FIG_DIR / "07_stem_vs_payoff.png", dpi=150)
+fig.savefig(FIG_DIR / "07_high_earning_score_vs_payoff.png", dpi=150)
 plt.close(fig)
-print("Saved 07_stem_vs_payoff.png")
+print("Saved 07_high_earning_score_vs_payoff.png")
 
 # =====================================================================
 # MODEL TRAINING UTILITIES
@@ -458,7 +485,7 @@ class PyTorchRegressor:
         y = np.asarray(y, dtype=np.float32)
 
         n_val = max(1, int(0.15 * len(X)))
-        idx = np.random.RandomState(42).permutation(len(X))
+        idx = np.random.RandomState(SEED).permutation(len(X))
         X_tr, X_val = X[idx[n_val:]], X[idx[:n_val]]
         y_tr, y_val = y[idx[n_val:]], y[idx[:n_val]]
 
@@ -478,9 +505,10 @@ class PyTorchRegressor:
         self.train_losses_ = []
         self.val_losses_ = []
 
+        gen = torch.Generator().manual_seed(SEED)
         for epoch in range(self.epochs):
             self.model.train()
-            perm = torch.randperm(len(X_tr_t))
+            perm = torch.randperm(len(X_tr_t), generator=gen)
             epoch_loss = 0.0
             n_batches = 0
             for i in range(0, len(X_tr_t), self.batch_size):
@@ -543,7 +571,7 @@ def eval_model(pipe, X_tr, y_tr, X_te, y_te, cv=True):
         "R2": round(r2_score(y_te, y_pred), 3),
     }
     if cv:
-        cv_scores = cross_val_score(pipe, X_tr, y_tr, cv=CV_FULL,
+        cv_scores = cross_val_score(pipe, X_tr, y_tr, cv=KF_FULL,
                                     scoring="neg_mean_absolute_error")
         metrics["CV_MAE"] = round(-cv_scores.mean(), 3)
     return y_pred, metrics
@@ -557,7 +585,7 @@ NUMERIC_FEATURES = NUMERIC_WITH_STEM  # use high_earning_share for all final mod
 X = df[NUMERIC_FEATURES + CATEGORICAL_FEATURES]
 y = df["estimated_payoff_years"]
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
+    X, y, test_size=0.2, random_state=SEED
 )
 
 print("\n── Hyperparameter Tuning ──")
@@ -566,6 +594,8 @@ print("\n── Hyperparameter Tuning ──")
 # RF / NN are expensive → 3-fold CV, moderate grids
 CV_FAST = 3
 CV_FULL = 5
+KF_FAST = KFold(n_splits=CV_FAST, shuffle=True, random_state=SEED)
+KF_FULL = KFold(n_splits=CV_FULL, shuffle=True, random_state=SEED)
 
 # ── Ridge alpha sweep ───────────────────────────────────────────────
 
@@ -574,7 +604,7 @@ ridge_cv_maes = []
 for a in alphas:
     pipe = Pipeline([("prep", make_preprocessor(NUMERIC_FEATURES)),
                      ("model", Ridge(alpha=a))])
-    scores = cross_val_score(pipe, X_train, y_train, cv=CV_FULL,
+    scores = cross_val_score(pipe, X_train, y_train, cv=KF_FULL,
                              scoring="neg_mean_absolute_error")
     ridge_cv_maes.append(-scores.mean())
 
@@ -602,8 +632,8 @@ for d in depths:
     pipe = Pipeline([("prep", make_preprocessor(NUMERIC_FEATURES)),
                      ("model", DecisionTreeRegressor(max_depth=d,
                                                       min_samples_leaf=10,
-                                                      random_state=42))])
-    scores = cross_val_score(pipe, X_train, y_train, cv=CV_FULL,
+                                                      random_state=SEED))])
+    scores = cross_val_score(pipe, X_train, y_train, cv=KF_FULL,
                              scoring="neg_mean_absolute_error")
     dt_depth_maes.append(-scores.mean())
 
@@ -615,8 +645,8 @@ for lf in leafs:
     pipe = Pipeline([("prep", make_preprocessor(NUMERIC_FEATURES)),
                      ("model", DecisionTreeRegressor(max_depth=best_depth,
                                                       min_samples_leaf=lf,
-                                                      random_state=42))])
-    scores = cross_val_score(pipe, X_train, y_train, cv=CV_FULL,
+                                                      random_state=SEED))])
+    scores = cross_val_score(pipe, X_train, y_train, cv=KF_FULL,
                              scoring="neg_mean_absolute_error")
     dt_leaf_maes.append(-scores.mean())
 
@@ -649,8 +679,8 @@ rf_nest_maes = []
 for n in n_est_vals:
     pipe = Pipeline([("prep", make_preprocessor(NUMERIC_FEATURES)),
                      ("model", RandomForestRegressor(n_estimators=n, max_depth=12,
-                                                      random_state=42, n_jobs=-1))])
-    scores = cross_val_score(pipe, X_train, y_train, cv=CV_FAST,
+                                                      random_state=SEED, n_jobs=-1))])
+    scores = cross_val_score(pipe, X_train, y_train, cv=KF_FAST,
                              scoring="neg_mean_absolute_error")
     rf_nest_maes.append(-scores.mean())
 
@@ -661,9 +691,9 @@ rf_depth_maes = []
 for d in rf_depths:
     pipe = Pipeline([("prep", make_preprocessor(NUMERIC_FEATURES)),
                      ("model", RandomForestRegressor(n_estimators=best_nest,
-                                                      max_depth=d, random_state=42,
+                                                      max_depth=d, random_state=SEED,
                                                       n_jobs=-1))])
-    scores = cross_val_score(pipe, X_train, y_train, cv=CV_FAST,
+    scores = cross_val_score(pipe, X_train, y_train, cv=KF_FAST,
                              scoring="neg_mean_absolute_error")
     rf_depth_maes.append(-scores.mean())
 
@@ -677,8 +707,8 @@ for lf in rf_leafs:
                      ("model", RandomForestRegressor(n_estimators=best_nest,
                                                       max_depth=best_rf_depth,
                                                       min_samples_leaf=lf,
-                                                      random_state=42, n_jobs=-1))])
-    scores = cross_val_score(pipe, X_train, y_train, cv=CV_FAST,
+                                                      random_state=SEED, n_jobs=-1))])
+    scores = cross_val_score(pipe, X_train, y_train, cv=KF_FAST,
                              scoring="neg_mean_absolute_error")
     rf_leaf_maes.append(-scores.mean())
 
@@ -728,7 +758,7 @@ y_test_np = y_test.values.astype(np.float32)
 # Hold out 20% of training data for NN hyperparameter selection
 # (never touch X_test during sweeps to avoid data leakage)
 nn_val_n = int(0.2 * len(X_train_nn))
-nn_rng = np.random.RandomState(42)
+nn_rng = np.random.RandomState(SEED)
 nn_shuffle = nn_rng.permutation(len(X_train_nn))
 X_sweep_val = X_train_nn[nn_shuffle[:nn_val_n]]
 y_sweep_val = y_train_np[nn_shuffle[:nn_val_n]]
@@ -874,7 +904,7 @@ preds_dict["Ridge"] = y_pred_ridge
 dt_pipe = Pipeline([("prep", make_preprocessor(NUMERIC_FEATURES)),
                      ("model", DecisionTreeRegressor(max_depth=best_depth,
                                                       min_samples_leaf=best_leaf,
-                                                      random_state=42))])
+                                                      random_state=SEED))])
 y_pred_dt, results["Decision Tree"] = eval_model(
     dt_pipe, X_train, y_train, X_test, y_test
 )
@@ -885,7 +915,7 @@ rf_pipe = Pipeline([("prep", make_preprocessor(NUMERIC_FEATURES)),
                      ("model", RandomForestRegressor(n_estimators=best_nest,
                                                       max_depth=best_rf_depth,
                                                       min_samples_leaf=best_rf_leaf,
-                                                      random_state=42, n_jobs=-1))])
+                                                      random_state=SEED, n_jobs=-1))])
 y_pred_rf, results["Random Forest"] = eval_model(
     rf_pipe, X_train, y_train, X_test, y_test
 )
@@ -1009,17 +1039,17 @@ comparison = {"With High-Earning Score": {}, "Without High-Earning Score": {}}
 for name_tag, num_feats in [("With High-Earning Score", NUMERIC_WITH_STEM),
                              ("Without High-Earning Score", NUMERIC_WITHOUT_STEM)]:
     X_comp = df[num_feats + CATEGORICAL_FEATURES]
-    Xtr, Xte, ytr, yte = train_test_split(X_comp, y, test_size=0.2, random_state=42)
+    Xtr, Xte, ytr, yte = train_test_split(X_comp, y, test_size=0.2, random_state=SEED)
 
     for model_name, model_obj in [
         ("Ridge", Ridge(alpha=best_alpha)),
         ("Decision Tree", DecisionTreeRegressor(max_depth=best_depth,
                                                  min_samples_leaf=best_leaf,
-                                                 random_state=42)),
+                                                 random_state=SEED)),
         ("Random Forest", RandomForestRegressor(n_estimators=best_nest,
                                                  max_depth=best_rf_depth,
                                                  min_samples_leaf=best_rf_leaf,
-                                                 random_state=42, n_jobs=-1)),
+                                                 random_state=SEED, n_jobs=-1)),
     ]:
         pipe = Pipeline([("prep", make_preprocessor(num_feats)),
                           ("model", model_obj)])
@@ -1177,7 +1207,7 @@ class NNWrapper:
 
 perm_result = permutation_importance(
     NNWrapper(final_nn), X_test_nn, y_test_np,
-    n_repeats=5, random_state=42, scoring="neg_mean_absolute_error"
+    n_repeats=5, random_state=SEED, scoring="neg_mean_absolute_error"
 )
 perm_series = pd.Series(perm_result.importances_mean, index=all_feat_names)
 top_perm = perm_series.nlargest(15).sort_values()

@@ -19,9 +19,9 @@
       "R2": 0.626
     },
     "Neural Network": {
-      "MAE": 4.201,
-      "RMSE": 5.682,
-      "R2": 0.582
+      "MAE": 4.162,
+      "RMSE": 5.639,
+      "R2": 0.589
     }
   },
   "Without High-Earning Score": {
@@ -44,9 +44,9 @@
       "R2": 0.611
     },
     "Neural Network": {
-      "MAE": 4.292,
-      "RMSE": 5.833,
-      "R2": 0.56
+      "MAE": 4.33,
+      "RMSE": 5.762,
+      "R2": 0.571
     }
   }
 }
