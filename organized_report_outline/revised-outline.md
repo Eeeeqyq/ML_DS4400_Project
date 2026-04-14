@@ -29,7 +29,7 @@ Walk through categorical and numeric features. Emphasize the choices that requir
 - Missingness indicators for admission rate and degree-field data (informative absence)
 - Dropping SAT (only 23% reporting)
 
-### STEM Score (Engineered Feature)
+### High-Earning Score (Engineered Feature)
 Sum of degree shares across six high-earning fields: CS, engineering, biology, math, physical sciences, and business. Why these six. Tested with and without across all four models: small but consistent improvement everywhere.
 
 ### Exploratory Findings

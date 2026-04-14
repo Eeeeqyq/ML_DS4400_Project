@@ -21,10 +21,10 @@
     "CV_MAE": 4.405
   },
   "Neural Network": {
-    "Train_MAE": 3.728,
-    "MAE": 4.364,
-    "RMSE": 5.7,
-    "R2": 0.58,
-    "CV_MAE": 4.644
+    "Train_MAE": 3.758,
+    "MAE": 4.124,
+    "RMSE": 5.632,
+    "R2": 0.59,
+    "CV_MAE": 4.534
   }
 }

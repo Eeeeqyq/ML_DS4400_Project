@@ -1,5 +1,5 @@
 {
-  "With high_earning_share": {
+  "With High-Earning Score": {
     "Ridge": {
       "Train_MAE": 5.399,
       "MAE": 5.15,
@@ -19,12 +19,12 @@
       "R2": 0.626
     },
     "Neural Network": {
-      "MAE": 4.196,
-      "RMSE": 5.68,
-      "R2": 0.583
+      "MAE": 4.201,
+      "RMSE": 5.682,
+      "R2": 0.582
     }
   },
-  "Without high_earning_share": {
+  "Without High-Earning Score": {
     "Ridge": {
       "Train_MAE": 5.4,
       "MAE": 5.156,
@@ -44,9 +44,9 @@
       "R2": 0.611
     },
     "Neural Network": {
-      "MAE": 4.249,
-      "RMSE": 5.661,
-      "R2": 0.586
+      "MAE": 4.292,
+      "RMSE": 5.833,
+      "R2": 0.56
     }
   }
 }

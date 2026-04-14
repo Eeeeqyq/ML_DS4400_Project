@@ -36,7 +36,7 @@ export const PRESETS: Preset[] = [
   {
     name: "Elite Private",
     emoji: "🎓",
-    description: "Selective private nonprofit, high tuition, strong STEM",
+    description: "Selective private nonprofit, high tuition, strong high-earning programs",
     input: {
       UGDS_log: Math.log1p(6000),
       ADM_RATE: 0.20,
@@ -92,7 +92,7 @@ export const FIELD_LABELS: Record<string, string> = {
   NPT4: "Net Price ($)",
   PCTPELL: "% on Pell Grants",
   PCTFLOAN: "% with Federal Loans",
-  high_earning_share: "STEM Score",
+  high_earning_share: "High-Earning Score",
   UGDS_WHITE: "% White",
   UGDS_BLACK: "% Black",
   UGDS_HISP: "% Hispanic",

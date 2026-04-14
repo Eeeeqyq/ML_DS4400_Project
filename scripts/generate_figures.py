@@ -64,7 +64,7 @@ NULL_VALS = ["NULL", "PrivacySuppressed", "NA", "PS"]
 
 # ── Feature definitions ─────────────────────────────────────────────
 
-# "STEM Score" fields — STEM + Business (included because it is consistently
+# "High-Earning Score" fields — STEM + Business (included because it is consistently
 # high-earning in the Scorecard data). Summed into high_earning_share.
 HIGH_EARN_PCIP_COLS = [
     "PCIP11",  # Computer & Information Sciences
@@ -107,7 +107,7 @@ DISPLAY_NAMES = {
     "UGDS_HISP": "% undergrad Hispanic",
     "UGDS_ASIAN": "% undergrad Asian",
     "PCIP_reported": "Major data reported",
-    "high_earning_share": "STEM Score",
+    "high_earning_share": "High-Earning Score",
     "CONTROL": "Institution type (control)",
     "PREDDEG": "Predominant credential",
     "HIGHDEG": "Highest degree awarded",
@@ -392,7 +392,7 @@ for label, color in zip(existing, ["#1f77b4", "#ff7f0e", "#2ca02c"]):
                alpha=0.35, s=12, label=label, color=color)
 ax.set_xlabel(DISPLAY_NAMES["high_earning_share"])
 ax.set_ylabel(TARGET_LABEL)
-ax.set_title("STEM Score vs. estimated payoff time")
+ax.set_title("High-Earning Score vs. estimated payoff time")
 ax.legend()
 fig.tight_layout()
 fig.savefig(FIG_DIR / "07_stem_vs_payoff.png", dpi=150)
@@ -1004,10 +1004,10 @@ print("Saved 13_predicted_vs_actual.png")
 
 print("\n── Feature Engineering Comparison ──")
 
-comparison = {"With STEM Score": {}, "Without STEM Score": {}}
+comparison = {"With High-Earning Score": {}, "Without High-Earning Score": {}}
 
-for name_tag, num_feats in [("With STEM Score", NUMERIC_WITH_STEM),
-                             ("Without STEM Score", NUMERIC_WITHOUT_STEM)]:
+for name_tag, num_feats in [("With High-Earning Score", NUMERIC_WITH_STEM),
+                             ("Without High-Earning Score", NUMERIC_WITHOUT_STEM)]:
     X_comp = df[num_feats + CATEGORICAL_FEATURES]
     Xtr, Xte, ytr, yte = train_test_split(X_comp, y, test_size=0.2, random_state=42)
 
@@ -1049,8 +1049,8 @@ width = 0.35
 
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 for ax, metric in zip(axes, ["MAE", "R2"]):
-    with_vals = [comparison["With STEM Score"][m][metric] for m in comp_models]
-    without_vals = [comparison["Without STEM Score"][m][metric] for m in comp_models]
+    with_vals = [comparison["With High-Earning Score"][m][metric] for m in comp_models]
+    without_vals = [comparison["Without High-Earning Score"][m][metric] for m in comp_models]
     ax.bar(x - width / 2, with_vals, width,
            label=f"With {DISPLAY_NAMES['high_earning_share']}")
     ax.bar(x + width / 2, without_vals, width,
@@ -1058,7 +1058,7 @@ for ax, metric in zip(axes, ["MAE", "R2"]):
     ax.set_xticks(x)
     ax.set_xticklabels(comp_models, rotation=15, ha="right")
     ax.set_ylabel(metric)
-    ax.set_title(f"{metric}: with vs. without engineered STEM share")
+    ax.set_title(f"{metric}: with vs. without engineered high-earning share")
     ax.legend()
 fig.tight_layout()
 fig.savefig(FIG_DIR / "14_feature_onoff.png", dpi=150)

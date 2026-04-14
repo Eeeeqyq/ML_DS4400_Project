@@ -74,9 +74,9 @@ schools don't report, and those schools have longer payoff).
 
 ---
 
-## D6: Add PCIP_missing indicator for STEM Score (high_earning_share)
+## D6: Add PCIP_missing indicator for High-Earning Score (high_earning_share)
 
-**Note**: "STEM Score" = sum of degree shares across CS, engineering, biology,
+**Note**: "High-Earning Score" = sum of degree shares across CS, engineering, biology,
 math, physical sciences, and business (PCIP11/14/26/27/40/52). Includes business
 because it is consistently high-earning in the Scorecard data.
 

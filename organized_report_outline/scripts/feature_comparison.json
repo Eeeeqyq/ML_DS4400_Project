@@ -1,5 +1,5 @@
 {
-  "With STEM Score": {
+  "With High-Earning Score": {
     "Ridge": {
       "Train_MAE": 5.399,
       "MAE": 5.15,
@@ -24,7 +24,7 @@
       "R2": 0.565
     }
   },
-  "Without STEM Score": {
+  "Without High-Earning Score": {
     "Ridge": {
       "Train_MAE": 5.4,
       "MAE": 5.156,

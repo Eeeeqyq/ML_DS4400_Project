@@ -18,9 +18,9 @@
     "pct_predicted_capped": 11.7
   },
   "Neural Network": {
-    "capped_MAE": 4.675,
-    "noncapped_MAE": 4.145,
-    "noncapped_R2": 0.282,
-    "pct_predicted_capped": 5.7
+    "capped_MAE": 4.021,
+    "noncapped_MAE": 4.196,
+    "noncapped_R2": 0.23,
+    "pct_predicted_capped": 9.6
   }
 }

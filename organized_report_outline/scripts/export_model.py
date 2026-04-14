@@ -23,7 +23,7 @@ BASE = Path(__file__).resolve().parent.parent
 RAW_DATA_DIR = BASE / "raw-data"
 NULL_VALS = ["NULL", "PrivacySuppressed", "NA", "PS"]
 
-# "STEM Score" fields — STEM + Business (high-earning in Scorecard data)
+# "High-Earning Score" fields — STEM + Business (high-earning in Scorecard data)
 HIGH_EARN_PCIP_COLS = ["PCIP11", "PCIP14", "PCIP26", "PCIP27", "PCIP40", "PCIP52"]
 RAW_NUMERIC_COLS = [
     "UGDS", "ADM_RATE",
